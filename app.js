@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
 // api routes
+mongoose.pluralize(null);
 
 const patientsRoutes = require('./routes/patientsRoutes');
 const doctorsRoutes = require('./routes/doctorsRoutes');
@@ -14,7 +15,6 @@ const categoryRoutes = require('./routes/treatmentCategoryRoutes');
 
 dotenv.config();
 
-mongoose.pluralize(null);
 const app = express();
 
 app.use(express.json());
