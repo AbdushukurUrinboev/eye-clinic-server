@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const http = require('http');
 const initializeSocket = require('./socket');
+const { authenticateToken } = require("./custom-middlewares/authToken")
 
 // api routes
 mongoose.pluralize(null);
@@ -15,7 +16,8 @@ const diseaseRoutes = require('./routes/diseasesRoutes');
 const categoryRoutes = require('./routes/treatmentCategoryRoutes');
 const appointmentsController = require('./routes/appointments');
 const PatientDeptsRouter = require('./routes/depts');
-
+const { createAdminUser } = require("./controllers/actions/users")
+const usersRoutes = require("./routes/userRoutes")
 
 dotenv.config();
 
@@ -25,7 +27,7 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", "http://localhost:4000");
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept-Type"
@@ -36,7 +38,10 @@ app.use(function (req, res, next) {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:4000', // Replace with your client's origin
+    credentials: true, // Allow cookies
+}));
 
 main().catch(err => console.log(err));
 
@@ -56,13 +61,17 @@ db.on('error', (err) => {
 
 db.once('open', () => {
     console.log('Connected to MongoDB');
+    // create admin if not already
+    createAdminUser();
 });
 
 const server = http.createServer(app);
 
 
-app.use('/api/patients', patientsRoutes);
+
+app.use('/api/patients', authenticateToken, patientsRoutes);
 app.use('/api/doctors', doctorsRoutes);
+app.use('/api/users', usersRoutes)
 app.use('/api/departments', categoryRoutes);
 app.use('/api/diseases', diseaseRoutes);
 app.use('/api/appointments', appointmentsController);
