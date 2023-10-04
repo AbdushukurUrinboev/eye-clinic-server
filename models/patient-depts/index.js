@@ -1,21 +1,21 @@
 const mongoose = require('mongoose');
 
-const pendingPaymentsSchema = new mongoose.Schema({
-   diseaseName: String,
-   price: Number
-});
 
-const treatmentCategorySchema = new mongoose.Schema({
+const PatientDeptsSchema = new mongoose.Schema({
    patientID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Patients'
    },
-   firstName: String,
-   lastName: String,
-   patronymic: String,
-   pendingPayments: [pendingPaymentsSchema],
+   patientFullName: String,
+   pendingPayments: [{
+      diseaseName: String,
+      price: Number
+   }],
    overallPrice: Number,
-   phoneNumber: String
+   date: {
+      type: Date,
+      default: new Date().toISOString()
+   }
 });
 
-module.exports = mongoose.model('PatientDepts', treatmentCategorySchema);
+module.exports = mongoose.model('PatientDepts', PatientDeptsSchema);

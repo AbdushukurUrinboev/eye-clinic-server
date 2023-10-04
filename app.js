@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const http = require('http');
+const initializeSocket = require('./socket');
 
 // api routes
 mongoose.pluralize(null);
@@ -11,6 +13,8 @@ const patientsRoutes = require('./routes/patientsRoutes');
 const doctorsRoutes = require('./routes/doctorsRoutes');
 const diseaseRoutes = require('./routes/diseasesRoutes');
 const categoryRoutes = require('./routes/treatmentCategoryRoutes');
+const appointmentsController = require('./routes/appointments');
+const PatientDeptsRouter = require('./routes/depts');
 
 
 dotenv.config();
@@ -54,13 +58,20 @@ db.once('open', () => {
     console.log('Connected to MongoDB');
 });
 
+const server = http.createServer(app);
+
+
 app.use('/api/patients', patientsRoutes);
 app.use('/api/doctors', doctorsRoutes);
 app.use('/api/departments', categoryRoutes);
 app.use('/api/diseases', diseaseRoutes);
+app.use('/api/appointments', appointmentsController);
+app.use('/api/patient-depts', PatientDeptsRouter);
+
+const io = initializeSocket(server);
 
 const port = process.env.PORT || 4000;
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

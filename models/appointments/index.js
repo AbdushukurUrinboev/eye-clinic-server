@@ -1,11 +1,17 @@
 const mongoose = require('mongoose');
 
-const selectedDiseasesSchema = new mongoose.Schema({
-   diseaseName: String,
-   price: Number
-});
 
 const appointmentsSchema = new mongoose.Schema({
+   selectedPatientId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Patients',
+      required: true
+   },
+   selectedDoctorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Doctors',
+      required: true
+   },
    selectedPatient: {
       type: String,
       required: true
@@ -18,11 +24,24 @@ const appointmentsSchema = new mongoose.Schema({
       type: String,
       required: true
    },
-   selectedDiseases: [selectedDiseasesSchema],
+   selectedDiseases: [{
+      diseaseName: String,
+      price: Number
+   }],
    selectedPrice: {
       type: Number,
       required: true
+   },
+   isPending: {
+      type: Boolean,
+      default: true
+   },
+   createdAt: { // must store actual date
+      type: Date,
+      default: new Date().toISOString()
    }
 });
+
+appointmentsSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Appointments', appointmentsSchema);
