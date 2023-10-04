@@ -22,7 +22,11 @@ const patientsSchema = new mongoose.Schema({
     region: String,
     district: String,
     address: String,
-    treatmentHistory: [String]
+    treatmentHistory: [{
+        diseaseName: String,
+        amountPaid: Number,
+        date: { type: Date }
+    }]
 });
 
 module.exports = mongoose.model('Patients', patientsSchema);
