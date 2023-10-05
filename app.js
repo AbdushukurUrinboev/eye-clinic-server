@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const http = require('http');
 const initializeSocket = require('./socket');
 const { authenticateToken } = require("./custom-middlewares/authToken")
@@ -24,6 +25,7 @@ dotenv.config();
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use('/uploads', express.static('uploads'));
 
 app.use(function (req, res, next) {
@@ -70,12 +72,12 @@ const server = http.createServer(app);
 
 
 app.use('/api/patients', authenticateToken, patientsRoutes);
-app.use('/api/doctors', doctorsRoutes);
-app.use('/api/users', usersRoutes)
-app.use('/api/departments', categoryRoutes);
-app.use('/api/diseases', diseaseRoutes);
-app.use('/api/appointments', appointmentsController);
-app.use('/api/patient-depts', PatientDeptsRouter);
+app.use('/api/doctors', authenticateToken, doctorsRoutes);
+app.use('/api/users', usersRoutes);
+app.use('/api/departments', authenticateToken, categoryRoutes);
+app.use('/api/diseases', authenticateToken, diseaseRoutes);
+app.use('/api/appointments', authenticateToken, appointmentsController);
+app.use('/api/patient-depts', authenticateToken, PatientDeptsRouter);
 
 const io = initializeSocket(server);
 

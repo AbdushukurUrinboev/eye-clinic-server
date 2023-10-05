@@ -23,8 +23,6 @@ const authenticateToken = (req, res, next) => {
                     expiresIn: '1h', // New access token expiration time
                 });
 
-
-
                 // Set the new access token in cookies
                 res.cookie('token', newAccessToken, { httpOnly: true });
                 console.log("new token added");
