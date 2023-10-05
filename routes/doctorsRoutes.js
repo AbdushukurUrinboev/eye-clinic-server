@@ -5,6 +5,7 @@ const doctorsController = require("../controllers/doctorsContoller");
 
 router.get('/', doctorsController.getAllDoctors);
 router.post('/', upload.single('avatar'), doctorsController.createDoctors);
+router.post('/login', doctorsController.loginDoctor);
 router.put('/:id', doctorsController.updateDoctors);
 router.delete('/:id', doctorsController.deleteDoctors);
 

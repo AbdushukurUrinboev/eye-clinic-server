@@ -12,7 +12,7 @@ const diseasesSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['admin', 'viewer', 'interpreter', 'developer'],
+        enum: ['admin', 'viewer', 'developer'],
         required: true
     }
 });
