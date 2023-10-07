@@ -15,8 +15,8 @@ const patientsRoutes = require('./routes/patientsRoutes');
 const doctorsRoutes = require('./routes/doctorsRoutes');
 const diseaseRoutes = require('./routes/diseasesRoutes');
 const categoryRoutes = require('./routes/treatmentCategoryRoutes');
-const appointmentsController = require('./routes/appointments');
-const PatientDeptsRouter = require('./routes/depts');
+const appointmentsRoutes = require('./routes/appointments');
+const patientDeptsRoutes = require('./routes/depts');
 const { createAdminUser } = require("./controllers/actions/users")
 const usersRoutes = require("./routes/userRoutes")
 
@@ -41,7 +41,7 @@ app.use(function (req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors({
-    origin: 'http://localhost:4000', // Replace with your client's origin
+    origin: '*', // Replace with your client's origin
     credentials: true, // Allow cookies
 }));
 
@@ -76,8 +76,8 @@ app.use('/api/doctors', authenticateToken, doctorsRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/departments', authenticateToken, categoryRoutes);
 app.use('/api/diseases', authenticateToken, diseaseRoutes);
-app.use('/api/appointments', authenticateToken, appointmentsController);
-app.use('/api/patient-depts', authenticateToken, PatientDeptsRouter);
+app.use('/api/appointments', authenticateToken, appointmentsRoutes);
+app.use('/api/patient-depts', authenticateToken, patientDeptsRoutes);
 
 const io = initializeSocket(server);
 
