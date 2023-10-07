@@ -41,7 +41,7 @@ app.use(function (req, res, next) {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors({
-    origin: 'http://192.168.0.192:3000', // Replace with your client's origin
+    origin: true, // Replace with your client's origin
     credentials: true, // Allow cookies
 }));
 
