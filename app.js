@@ -3,13 +3,14 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+mongoose.pluralize(null);
+
 const cookieParser = require('cookie-parser');
 const http = require('http');
-const initializeSocket = require('./socket');
+// const initializeSocket = require('./socket');
 const { authenticateToken } = require("./custom-middlewares/authToken")
 
 // api routes
-mongoose.pluralize(null);
 
 const patientsRoutes = require('./routes/patientsRoutes');
 const doctorsRoutes = require('./routes/doctorsRoutes');
@@ -79,7 +80,7 @@ app.use('/api/diseases', authenticateToken, diseaseRoutes);
 app.use('/api/appointments', authenticateToken, appointmentsRoutes);
 app.use('/api/patient-depts', authenticateToken, patientDeptsRoutes);
 
-const io = initializeSocket(server);
+// const io = initializeSocket(server);
 
 const port = process.env.PORT || 4000;
 
