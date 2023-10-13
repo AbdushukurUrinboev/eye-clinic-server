@@ -1,5 +1,8 @@
 const Appointments = require("../models/appointments");
-const { addDeptToPatient } = require("./actions/patientDepts")
+const { addDeptToPatient } = require("./actions/patientDepts");
+const path = require('path');
+const fs = require('fs');
+const { changeState } = require("./socket/appointment");
 
 const getAllAppointments = async (req, res) => {
    const allAppointments = await Appointments.find({}).sort({ createdAt: -1 });
@@ -9,6 +12,18 @@ const getAllAppointments = async (req, res) => {
 const getAllPendingAppointments = async (req, res) => {
    const allAppointments = await Appointments.find({ isPending: true }).sort({ createdAt: -1 });
    res.send(allAppointments);
+}
+
+const addToJson = (obj) => {
+   const filePath = path.join(__dirname, './../appointments.json');
+   const jsonData = JSON.parse(fs.readFileSync(filePath));
+
+   jsonData.appointments.push(obj);
+   fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
+      if (err) {
+         console.error('Error writing JSON file:', err);
+      }
+   });
 }
 
 const createAppointments = async (req, res) => {
@@ -26,6 +41,7 @@ const createAppointments = async (req, res) => {
       if (savedDeptResponse) {
          const newAppointment = new Appointments(req.body);
          const savedAppointment = await newAppointment.save();
+         addToJson(savedAppointment);
          res.send(savedAppointment);
       } else {
          res.status(500).send('Error!');
@@ -41,10 +57,51 @@ const deleteAppointments = async (req, res) => {
    res.send(deletedAppointment);
 }
 
+// order handlers
+
+const checkNewUpdates = (req, res) => {
+   const filePath = path.join(__dirname, './../appointments.json');
+   const jsonData = JSON.parse(fs.readFileSync(filePath));
+
+   res.send(jsonData);
+   jsonData.appointments = [];
+   jsonData.calledAppointment = [];
+   fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
+      if (err) {
+         console.error('Error writing JSON file:', err);
+      }
+   });
+}
+
+
+const callPatient = async (req, res) => {
+   const { appointmentId } = req.body;
+   const filePath = path.join(__dirname, './../appointments.json');
+   const jsonData = JSON.parse(fs.readFileSync(filePath));
+
+   // remove from appointments if needed.
+   jsonData.appointments = jsonData.appointments.filter(item => item._id !== appointmentId);
+
+   const result = await changeState(appointmentId);
+   if (result) {
+      jsonData.calledAppointment.push(result);
+      fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
+         if (err) {
+            console.error('Error writing JSON file:', err);
+         }
+      });
+      res.send("patient called");
+   } else {
+      res.status(500).send('Error: ' + "error updating appointment state");
+   }
+}
+
 
 module.exports = {
    deleteAppointments,
    createAppointments,
    getAllAppointments,
-   getAllPendingAppointments
+   getAllPendingAppointments,
+   checkNewUpdates,
+   callPatient
 }
