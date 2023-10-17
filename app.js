@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use('/uploads', express.static('uploads'));
 
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://192.168.0.192:3000");
+    res.header("Access-Control-Allow-Origin", "192.168.205.167:3000");
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept-Type"
@@ -49,7 +49,7 @@ app.use(cors({
 main().catch(err => console.log(err));
 
 async function main() {
-    await mongoose.connect(process.env.MONGODB_URI, {
+    await mongoose.connect(process.env.MONGODB_REMOTE_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });
@@ -73,7 +73,7 @@ const server = http.createServer(app);
 
 
 app.use('/api/patients', authenticateToken, patientsRoutes);
-app.use('/api/doctors', authenticateToken, doctorsRoutes);
+app.use('/api/doctors', doctorsRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/departments', authenticateToken, categoryRoutes);
 app.use('/api/diseases', authenticateToken, diseaseRoutes);
