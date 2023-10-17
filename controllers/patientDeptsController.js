@@ -16,7 +16,7 @@ const createPatientDepts = async (req, res) => {
 
 const payDept = async (req, res) => {
    try {
-      const foundPTdept = await PatientDepts.deleteOne(req.params.id);
+      const foundPTdept = await PatientDepts.deleteOne({ _id: req.params.id });
       res.send(foundPTdept);
    } catch (err) {
       res.status(500).send('Error: ' + err.message);

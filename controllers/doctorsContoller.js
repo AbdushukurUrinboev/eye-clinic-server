@@ -4,9 +4,17 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const getAllDoctors = async (req, res) => {
-   console.log(req.get('host'));
    const allDoctors = await Doctors.find({});
    res.send(allDoctors);
+}
+
+const getDoctor = async (req, res) => {
+   const foundDoc = await Doctors.findOne({ _id: req.params.id });
+   if (foundDoc) {
+      res.send(foundDoc);
+   } else {
+      res.status(500).send('doctor not found');
+   }
 }
 
 const createDoctors = async (req, res) => {
@@ -68,5 +76,6 @@ module.exports = {
    updateDoctors,
    createDoctors,
    getAllDoctors,
-   loginDoctor
+   loginDoctor,
+   getDoctor
 }
