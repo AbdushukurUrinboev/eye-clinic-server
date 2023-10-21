@@ -38,7 +38,7 @@ const appointmentsSchema = new mongoose.Schema({
    },
    createdAt: { // must store actual date
       type: Date,
-      default: new Date().toISOString()
+      default: () => new Date().toISOString() /// neeed to fix date
    }
 });
 

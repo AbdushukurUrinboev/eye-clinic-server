@@ -10,8 +10,26 @@ const getAllAppointments = async (req, res) => {
 }
 
 const getAllPendingAppointments = async (req, res) => {
-   const allAppointments = await Appointments.find({ isPending: true }).sort({ createdAt: -1 });
+   const allAppointments = await Appointments.find({}).sort({ createdAt: -1 });
    res.send(allAppointments);
+
+   // clear appointments
+   const filePath = path.join(__dirname, './../appointments.json');
+   const jsonData = JSON.parse(fs.readFileSync(filePath));
+
+   jsonData.appointments = [];
+   fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
+      if (err) {
+         console.error('Error writing JSON file:', err);
+      }
+   });
+}
+
+const getAllPendingAppointmentsForDoctor = async (req, res) => {
+   const { id } = req.params;
+   const allAppointments = await Appointments.find({ selectedDoctorId: id }).sort({ createdAt: -1 });
+   res.send(allAppointments);
+
 }
 
 const addToJson = (obj) => {
@@ -39,7 +57,7 @@ const createAppointments = async (req, res) => {
       const savedDeptResponse = await addDeptToPatient(newPTDept);
 
       if (savedDeptResponse) {
-         const newAppointment = new Appointments(req.body);
+         const newAppointment = new Appointments({ ...req.body, createdAt: new Date().toISOString() });
          const savedAppointment = await newAppointment.save();
          addToJson(savedAppointment);
          res.send(savedAppointment);
@@ -103,5 +121,6 @@ module.exports = {
    getAllAppointments,
    getAllPendingAppointments,
    checkNewUpdates,
-   callPatient
+   callPatient,
+   getAllPendingAppointmentsForDoctor
 }
