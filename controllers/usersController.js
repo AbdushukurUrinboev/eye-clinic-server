@@ -65,7 +65,7 @@ const loginUser = async (req, res) => {
         expiresIn: '14d', // Refresh token expiration time (longer)
     });
 
-    const refreshTokenCookieConfig = rememberMe ? { httpOnly: true, expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000) } : { httpOnly: true }
+    const refreshTokenCookieConfig = rememberMe ? { httpOnly: true, expires: new Date(Date.now() + 31 * 24 * 60 * 60 * 1000) } : { httpOnly: true }
 
     res.cookie('token', token, { httpOnly: true });
     res.cookie('refreshToken', refreshToken, refreshTokenCookieConfig);

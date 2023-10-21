@@ -4,6 +4,7 @@ const appointmentsController = require("../controllers/appointmentsController");
 
 router.get('/', appointmentsController.getAllAppointments);
 router.get('/pending', appointmentsController.getAllPendingAppointments);
+router.get('/doctor/:id', appointmentsController.getAllPendingAppointmentsForDoctor);
 router.post('/', appointmentsController.createAppointments);
 router.delete('/:id', appointmentsController.deleteAppointments);
 // queue handlers
