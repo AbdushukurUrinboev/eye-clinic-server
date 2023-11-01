@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 
 const diseasesSchema = new mongoose.Schema({
+    fullName: {
+        type: String,
+        required: true
+    },
+    phoneNumber: {
+        type: String,
+        required: true
+    },
     login: {
         type: String,
         unique: true,
