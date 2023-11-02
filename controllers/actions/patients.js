@@ -1,4 +1,4 @@
-const Patients = require("../../models/patients");
+const { Patients } = require("../../models/patients");
 
 const addToPThistory = async (pt_id, newHistory) => {
    const foundPT = await Patients.findOne({ _id: pt_id });

@@ -4,7 +4,7 @@ const addDeptToPatient = async (newDeptsData) => {
    try {
       const existingPatientDept = await PatientDepts.findOne({ patientID: newDeptsData.patientID });
       if (!existingPatientDept) {
-         const newDept = new PatientDepts(newDeptsData);
+         const newDept = new PatientDepts({ ...newDeptsData, date: new Date().toISOString() });
          const savedDept = await newDept.save();
          return savedDept;
       } else {

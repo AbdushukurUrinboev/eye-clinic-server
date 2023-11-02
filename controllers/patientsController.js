@@ -1,4 +1,4 @@
-const Patients = require("../models/patients");
+const { Patients, PatientsArchive } = require("../models/patients");
 
 const getAllPatients = async (req, res) => {
     const allPatients = await Patients.find({});
@@ -20,6 +20,15 @@ const createPatients = async (req, res) => {
     }
 }
 
+const getOnePatient = async (req, res) => {
+    const foundDoc = await Patients.findOne({ _id: req.params.id });
+    if (foundDoc) {
+        res.send(foundDoc);
+    } else {
+        res.status(500).send('doctor not found');
+    }
+}
+
 const updatePatients = async (req, res) => {
     try {
         const updatedPatient = await Patients.findOneAndUpdate({ _id: req.params.id }, req.body, {
@@ -32,8 +41,15 @@ const updatePatients = async (req, res) => {
 }
 
 const deletePatients = async (req, res) => {
-    const deletedPatient = await Patients.deleteOne({ _id: req.params.id });
-    res.send(deletedPatient);
+    try {
+        const deletedPatient = await Patients.findOneAndDelete({ _id: req.params.id });
+
+        const archivingPt = new PatientsArchive(deletedPatient._doc);
+        await archivingPt.save();
+        res.send(deletedPatient);
+    } catch (err) {
+        res.status(500).send('Error: ' + err.message);
+    }
 }
 
 
@@ -41,5 +57,6 @@ module.exports = {
     deletePatients,
     updatePatients,
     createPatients,
-    getAllPatients
+    getAllPatients,
+    getOnePatient
 }

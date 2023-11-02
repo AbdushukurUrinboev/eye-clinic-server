@@ -1,4 +1,4 @@
-const Appointments = require("../models/appointments");
+const { Appointments } = require("../models/appointments");
 const { addDeptToPatient } = require("./actions/patientDepts");
 const path = require('path');
 const fs = require('fs');
