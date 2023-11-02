@@ -20,7 +20,9 @@ const appointmentsRoutes = require('./routes/appointments');
 const patientDeptsRoutes = require('./routes/depts');
 const { createAdminUser } = require("./controllers/actions/users")
 const usersRoutes = require("./routes/userRoutes")
-
+// archives
+const archiveAppointmentsRoutes = require('./routes/appointments-archive');
+const paymentRoutes = require('./routes/payments');
 dotenv.config();
 
 const app = express();
@@ -49,7 +51,7 @@ app.use(cors({
 main().catch(err => console.log(err));
 
 async function main() {
-    await mongoose.connect(process.env.MONGODB_REMOTE_URI, {
+    await mongoose.connect(process.env.MONGODB_LOCAL_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });
@@ -79,6 +81,9 @@ app.use('/api/departments', authenticateToken, categoryRoutes);
 app.use('/api/diseases', authenticateToken, diseaseRoutes);
 app.use('/api/appointments', authenticateToken, appointmentsRoutes);
 app.use('/api/patient-depts', authenticateToken, patientDeptsRoutes);
+// archives
+app.use('/api/appointments-archive', authenticateToken, archiveAppointmentsRoutes);
+app.use('/api/paymentRoutes', authenticateToken, paymentRoutes);
 
 // const io = initializeSocket(server);
 
