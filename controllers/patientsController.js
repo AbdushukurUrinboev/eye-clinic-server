@@ -1,4 +1,6 @@
 const { Patients, PatientsArchive } = require("../models/patients");
+const { addDeptToPatient } = require("./actions/patientDepts");
+const { addToPThistory } = require("./actions/patients");
 
 const getAllPatients = async (req, res) => {
     const allPatients = await Patients.find({});
@@ -17,6 +19,25 @@ const createPatients = async (req, res) => {
         } else {
             res.status(500).send('Error: ' + err.message);
         }
+    }
+}
+const addPatientHistory = async (req, res) => {
+    try {
+        const newPTDept = {
+            patientID: req.params.id,
+            patientFullName: req.body.selectedPatient,
+            pendingPayments: req.body.selectedDiseases,
+            overallPrice: req.body.selectedPrice
+        };
+
+        const modifiedToPatientHistory = req.body.selectedDiseases.map((obj) => {
+            return { diseaseName: obj.diseaseName, amountPaid: obj.price, date: new Date().toISOString() }
+        });
+
+        addDeptToPatient(newPTDept);
+        addToPThistory(modifiedToPatientHistory);
+    } catch (err) {
+        res.status(500).send('Error: ' + err.message);
     }
 }
 
@@ -58,5 +79,6 @@ module.exports = {
     updatePatients,
     createPatients,
     getAllPatients,
-    getOnePatient
+    getOnePatient,
+    addPatientHistory
 }
