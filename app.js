@@ -51,7 +51,7 @@ app.use(cors({
 main().catch(err => console.log(err));
 
 async function main() {
-    await mongoose.connect(process.env.MONGODB_LOCAL_URI, {
+    await mongoose.connect(process.env.MONGODB_REMOTE_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });
