@@ -34,9 +34,9 @@ const addPatientHistory = async (req, res) => {
             return { diseaseName: obj.diseaseName, amountPaid: obj.price, date: new Date().toISOString() }
         });
 
-        addDeptToPatient(newPTDept);
-        addToPThistory(req.params.id, modifiedToPatientHistory);
-        res.status(500).send('success!');
+        await addDeptToPatient(newPTDept);
+        await addToPThistory(req.params.id, modifiedToPatientHistory);
+        res.status(200).send('success!');
     } catch (err) {
         res.status(500).send('Error: ' + err.message);
     }
