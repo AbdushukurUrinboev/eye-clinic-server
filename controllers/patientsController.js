@@ -36,6 +36,7 @@ const addPatientHistory = async (req, res) => {
 
         addDeptToPatient(newPTDept);
         addToPThistory(req.params.id, modifiedToPatientHistory);
+        res.status(500).send('success!');
     } catch (err) {
         res.status(500).send('Error: ' + err.message);
     }
