@@ -19,8 +19,9 @@ const createPatientDepts = async (req, res) => {
 const payDept = async (req, res) => {
    const { cash, card, click } = req.body;
    try {
-      const foundPTdept = await PatientDepts.deleteOne({ _id: req.params.id });
+      const foundPTdept = await PatientDepts.findOneAndDelete({ _id: req.params.id });
       const paymentObject = {
+         fullName: foundPTdept.patientFullName,
          cash,
          card,
          click,

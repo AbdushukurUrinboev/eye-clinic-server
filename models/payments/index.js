@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 
 const PaymentsSchema = new mongoose.Schema({
+   fullName: String,
    cash: Number,
    card: Number,
    click: Number,
