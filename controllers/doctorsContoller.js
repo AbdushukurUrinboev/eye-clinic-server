@@ -58,9 +58,9 @@ const loginDoctor = async (req, res) => {
       expiresIn: '14d', // Refresh token expiration time (longer)
    });
 
-   const refreshTokenCookieConfig = rememberMe ? { httpOnly: true, expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000) } : { httpOnly: true }
+   const refreshTokenCookieConfig = rememberMe ? { httpOnly: true, expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), sameSite: 'None', secure: true } : { httpOnly: true, sameSite: 'None', secure: true }
 
-   res.cookie('token', token, { httpOnly: true });
+   res.cookie('token', token, { httpOnly: true, sameSite: 'None', secure: true });
    res.cookie('refreshToken', refreshToken, refreshTokenCookieConfig);
 
    return res.status(200).json({ msg: 'Login successful', user: foundDoc });
