@@ -36,6 +36,7 @@ const appointmentsSchema = new mongoose.Schema({
       type: Boolean,
       default: true
    },
+   referencedId: String,
    createdAt: { // must store actual date
       type: Date,
       default: () => new Date().toISOString() /// neeed to fix date
@@ -73,5 +74,7 @@ ArchiveSchema.index({ createdAt: -1 });
 
 module.exports = {
    Appointments: mongoose.model('Appointments', appointmentsSchema),
-   AppointmentsArchive: mongoose.model('AppointmentsArchive', ArchiveSchema)
+   AppointmentsArchive: mongoose.model('AppointmentsArchive', ArchiveSchema),
+   AppointmentsQueue: mongoose.model('AppointmentsQueue', appointmentsSchema),
+   CalledAppointmentsQueue: mongoose.model('CalledAppointmentsQueue', appointmentsSchema),
 }
