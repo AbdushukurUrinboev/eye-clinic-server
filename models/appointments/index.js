@@ -36,6 +36,9 @@ const appointmentsSchema = new mongoose.Schema({
       type: Boolean,
       default: true
    },
+   room: {
+      type: String
+   },
    referencedId: String,
    createdAt: { // must store actual date
       type: Date,

@@ -1,3 +1,4 @@
+const Doctors = require("../models/doctors");
 const { Appointments, AppointmentsQueue, CalledAppointmentsQueue } = require("../models/appointments");
 const { addDeptToPatient } = require("./actions/patientDepts");
 const path = require('path');
@@ -67,9 +68,13 @@ const deleteAppointments = async (req, res) => {
 const checkNewUpdates = async (req, res) => {
    const prevQueues = await AppointmentsQueue.find({});
    const calledPrevQueues = await CalledAppointmentsQueue.find({});
-
-   await AppointmentsQueue.deleteMany({});
-   await CalledAppointmentsQueue.deleteMany({});
+   console.log(calledPrevQueues);
+   if(prevQueues.length > 0) {
+      await AppointmentsQueue.deleteMany({});
+   }
+   if(calledPrevQueues.length > 0) {
+      await CalledAppointmentsQueue.deleteMany({});
+   }
    const edittedQueue = prevQueues.map((queue) => {
       return { ...queue._doc, _id: queue.referencedId }
    });
@@ -90,9 +95,10 @@ const callPatient = async (req, res) => {
 
    const result = await changeState(appointmentId);
    if (result) {
-      const refId = result._doc._id;
-      result._doc._id = undefined;
-      const newCalledAppointmentQueue = new CalledAppointmentsQueue({ ...result._doc, referencedId: refId });
+      const refId = result._doc._id;   
+      const doctor = await Doctors.findOne({_id: result._doc.selectedDoctorId});
+      result._doc._id = undefined;      
+      const newCalledAppointmentQueue = new CalledAppointmentsQueue({ ...result._doc, referencedId: refId, room: doctor.roomNumber });
       await newCalledAppointmentQueue.save();
       res.send("patient called");
    } else {
